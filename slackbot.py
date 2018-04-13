@@ -1,23 +1,27 @@
 from slackclient import SlackClient
 import os
-import time
 
+
+""" Connecting to Slack API """
 def connect():
     
 	slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 	return slack_client
 
+""" Parsing response from Slack API """
 def parseResponse(response, botID):
+    	
 	bot_at_id = '<@'+botID+'>'
 	if response and len(response):
-		for obj in response:
-			if obj and 'text' in obj:
-				if bot_at_id in obj['text']:
-					return obj['text'].split(bot_at_id)[1].strip(), obj['channel']
+		for k in response:
+			if k and 'text' in k:
+				if bot_at_id in k['text']:
+					return k['text'].split(bot_at_id)[1].strip(), k['channel']
 	return None, None 
 
+""" Getting BOT ID from Slack API """
 def getBotId(bot_name):
-    
+    	
 	slack_client = connect()
 	api_call = slack_client.api_call('users.list')
 	users = api_call['members']
